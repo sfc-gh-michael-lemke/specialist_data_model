@@ -1,0 +1,27 @@
+version: 2
+
+sources:
+  - name: salesforce
+    database: FIVETRAN
+    schema: SALESFORCE
+    tables:
+      - name: vh_deliverable_history
+        description: History of field changes on deliverable records, including specialist comments.
+      - name: user
+        description: Salesforce user records with IDs and profile information.
+
+  - name: se_reporting
+    database: SALES
+    schema: SE_REPORTING
+    tables:
+      - name: dim_se_activity
+        description: SE activity log with use case linkage and activity dates.
+      - name: se_hierarchy
+        description: SE org hierarchy with preferred names, managers, tenure, and active status.
+
+  - name: sigma_writeback
+    database: SIGMA_WRITEBACK
+    schema: SALES
+    tables:
+      - name: dim_se_specialist_metadata
+        description: Specialist metadata including specialist group classification and employee mapping.

@@ -1,0 +1,50 @@
+version: 2
+
+models:
+  - name: specialist_engagement_status
+    description: >
+      Specialist engagement status combining SE hierarchy, specialist metadata,
+      comment activity, and SE activity data. Classifies each specialist as
+      Active, Inactive with Activity, or Inactive based on 14-day comment and
+      activity windows.
+    columns:
+      - name: preferred_name
+        description: Specialist's preferred display name.
+      - name: manager_name
+        description: Direct manager name.
+      - name: is_people_manager
+        description: Whether this specialist is a people manager.
+      - name: original_hire_date
+        description: Original hire date at the company.
+      - name: tenure
+        description: Calculated tenure value.
+      - name: hierarchy_3
+        description: Level 3 in the org hierarchy (typically theater).
+      - name: hierarchy_4
+        description: Level 4 in the org hierarchy (typically region).
+      - name: hierarchy_5
+        description: Level 5 in the org hierarchy (typically area).
+      - name: sfdc_id
+        description: Salesforce user ID.
+      - name: specialist_group
+        description: "Specialist classification: AFE, PSE, or Architect."
+      - name: specialist_comments_14d
+        description: Count of distinct specialist comment changes in the last 14 days.
+      - name: specialist_comments_7d
+        description: Count of distinct specialist comment changes in the last 7 days.
+      - name: activities_14d
+        description: Total SE activities in the last 14 days.
+      - name: w_uc_activity_14d
+        description: Activities with a linked use case in the last 14 days.
+      - name: no_uc_activity_14d
+        description: Activities without a linked use case in the last 14 days.
+      - name: activities_7d
+        description: Total SE activities in the last 7 days.
+      - name: w_uc_activity_7d
+        description: Activities with a linked use case in the last 7 days.
+      - name: no_uc_activity_7d
+        description: Activities without a linked use case in the last 7 days.
+      - name: status
+        description: >
+          Engagement status: Active (comments in 14d), Inactive with Activity
+          (no comments but has activities in 14d), or Inactive (neither).

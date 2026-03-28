@@ -25,4 +25,9 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 models:
   specialist_data_model:
-    +materialized: view
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: view
+    marts:
+      +materialized: table
