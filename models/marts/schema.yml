@@ -58,3 +58,8 @@ models:
     description: >
       Salesforce account metrics including growth ACV, consumption ACV,
       overage/underage, warehouse counts, use case counts, and role usage.
+
+  - name: specialist_use_case
+    description: >
+      Use case records with name, description, current stage, account linkage,
+      and date stamp.

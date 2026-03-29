@@ -34,3 +34,5 @@ sources:
     tables:
       - name: salesforce_account
         description: Salesforce account metrics including ACV, consumption, warehouse counts, use case counts, and role usage.
+      - name: usecase
+        description: Use case records with name, description, stage, account linkage, and date stamp.
