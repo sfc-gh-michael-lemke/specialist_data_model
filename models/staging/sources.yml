@@ -18,6 +18,8 @@ sources:
         description: SE activity log with use case linkage and activity dates.
       - name: se_hierarchy
         description: SE org hierarchy with preferred names, managers, tenure, and active status.
+      - name: specialist_team_member_requests
+        description: Specialist team member request records with assignment, approval, use case, and resolution details.
 
   - name: sigma_writeback
     database: SIGMA_WRITEBACK

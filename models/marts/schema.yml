@@ -48,3 +48,8 @@ models:
         description: >
           Engagement status: Active (comments in 14d), Inactive with Activity
           (no comments but has activities in 14d), or Inactive (neither).
+
+  - name: specialist_requests
+    description: >
+      Specialist team member requests with assignment, approval workflow,
+      use case details, resolution metrics, and timing data.
