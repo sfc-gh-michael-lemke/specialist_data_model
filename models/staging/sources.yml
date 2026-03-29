@@ -20,6 +20,8 @@ sources:
         description: SE org hierarchy with preferred names, managers, tenure, and active status.
       - name: specialist_team_member_requests
         description: Specialist team member request records with assignment, approval, use case, and resolution details.
+      - name: se_org_hierarchy_vw
+        description: SE org hierarchy view with employee details, management chain, skills assessments, certifications, and territory profiles.
 
   - name: sigma_writeback
     database: SIGMA_WRITEBACK
@@ -36,3 +38,10 @@ sources:
         description: Salesforce account metrics including ACV, consumption, warehouse counts, use case counts, and role usage.
       - name: usecase
         description: Use case records with name, description, stage, account linkage, and date stamp.
+
+  - name: pigment
+    database: IT
+    schema: PIGMENT
+    tables:
+      - name: pigment_roster
+        description: Pigment headcount roster with position details, hire status, org geography, SFDC user mapping, and territory profiles.

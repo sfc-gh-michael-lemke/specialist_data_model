@@ -1,0 +1,124 @@
+version: 2
+
+models:
+  - name: stg_sales_engineering__salesforce_account
+    description: Salesforce account metrics including ACV, consumption, and warehouse/role counts.
+    columns:
+      - name: salesforce_account_id
+        description: Primary key — Salesforce account ID.
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_sales_engineering__usecase
+    description: Use case records with name, description, stage, and account linkage.
+    columns:
+      - name: use_case_id
+        description: Primary key — use case ID.
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_salesforce__user
+    description: Salesforce user records (IDs only).
+    columns:
+      - name: id
+        description: Primary key — Salesforce user ID.
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_salesforce__vh_deliverable_history
+    description: History of field changes on deliverable records.
+    columns:
+      - name: id
+        description: Primary key — history record ID.
+        tests:
+          - unique
+          - not_null
+      - name: created_by_id
+        description: Salesforce user ID of the person who made the change.
+        tests:
+          - not_null
+
+  - name: stg_se_reporting__dim_se_activity
+    description: SE activity log with use case linkage and activity dates.
+    columns:
+      - name: activity_se_id
+        description: Salesforce user ID of the SE who performed the activity.
+        tests:
+          - not_null
+
+  - name: stg_se_reporting__se_hierarchy
+    description: SE hierarchy with preferred names, managers, tenure, and active status.
+    columns:
+      - name: sfdc_id
+        description: Primary key — Salesforce user ID.
+        tests:
+          - unique:
+              config:
+                severity: warn
+          - not_null:
+              config:
+                severity: warn
+      - name: preferred_name
+        description: Specialist's preferred display name.
+        tests:
+          - not_null:
+              config:
+                severity: warn
+
+  - name: stg_se_reporting__se_org_hierarchy_vw
+    description: Full SE org hierarchy with employee details, management chain, skills, and certifications.
+    columns:
+      - name: employee_id
+        description: Primary key — employee ID.
+        tests:
+          - unique
+          - not_null
+      - name: se_id
+        description: Salesforce user ID.
+        tests:
+          - not_null
+
+  - name: stg_se_reporting__specialist_team_member_requests
+    description: Specialist team member request records with assignment, approval, and resolution details.
+    columns:
+      - name: id
+        description: Primary key — request ID.
+        tests:
+          - unique
+          - not_null
+      - name: status
+        description: Current request status.
+        tests:
+          - not_null:
+              config:
+                severity: warn
+
+  - name: stg_sigma__dim_se_specialist_metadata
+    description: Specialist metadata with group classification.
+    columns:
+      - name: employee
+        description: Employee identifier string.
+        tests:
+          - unique
+          - not_null
+      - name: specialist_group
+        description: "Specialist classification: AFE, PSE, or Architect."
+        tests:
+          - not_null:
+              config:
+                severity: warn
+          - accepted_values:
+              values: ['AFE', 'PSE', 'Architect']
+              config:
+                severity: warn
+
+  - name: stg_pigment__pigment_roster
+    description: >
+      Pigment headcount roster with position details, hire status, org geography,
+      SFDC user mapping, and territory profiles. ~167M rows — materialized as view.
+    columns:
+      - name: position_id
+        description: Position ID. Not a reliable primary key — 1.8M nulls in source data.

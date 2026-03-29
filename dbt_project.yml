@@ -27,7 +27,10 @@ models:
   specialist_data_model:
     staging:
       +materialized: view
+      +schema: staging
     intermediate:
-      +materialized: view
+      +materialized: ephemeral
+      +schema: intermediate
     marts:
       +materialized: table
+      +schema: marts

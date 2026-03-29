@@ -10,6 +10,11 @@ models:
     columns:
       - name: preferred_name
         description: Specialist's preferred display name.
+        tests:
+          - unique:
+              config:
+                severity: warn
+          - not_null
       - name: manager_name
         description: Direct manager name.
       - name: is_people_manager
@@ -26,8 +31,17 @@ models:
         description: Level 5 in the org hierarchy (typically area).
       - name: sfdc_id
         description: Salesforce user ID.
+        tests:
+          - unique
+          - not_null:
+              config:
+                severity: warn
       - name: specialist_group
         description: "Specialist classification: AFE, PSE, or Architect."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['AFE', 'PSE', 'Architect']
       - name: specialist_comments_14d
         description: Count of distinct specialist comment changes in the last 14 days.
       - name: specialist_comments_7d
@@ -48,18 +62,86 @@ models:
         description: >
           Engagement status: Active (comments in 14d), Inactive with Activity
           (no comments but has activities in 14d), or Inactive (neither).
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Active', 'Inactive with Activity', 'Inactive']
 
   - name: specialist_requests
     description: >
       Specialist team member requests with assignment, approval workflow,
       use case details, resolution metrics, and timing data.
+    columns:
+      - name: id
+        description: Primary key — request ID.
+        tests:
+          - unique
+          - not_null
+      - name: account_id
+        description: Salesforce account ID linked to this request.
+        tests:
+          - relationships:
+              to: ref('stg_sales_engineering__salesforce_account')
+              field: salesforce_account_id
+              config:
+                severity: warn
+      - name: status
+        description: Current request status.
+        tests:
+          - not_null:
+              config:
+                severity: warn
 
   - name: specialist_accounts
     description: >
       Salesforce account metrics including growth ACV, consumption ACV,
       overage/underage, warehouse counts, use case counts, and role usage.
+    columns:
+      - name: salesforce_account_id
+        description: Primary key — Salesforce account ID.
+        tests:
+          - unique
+          - not_null
 
   - name: specialist_use_case
     description: >
       Use case records with name, description, current stage, account linkage,
       and date stamp.
+    columns:
+      - name: use_case_id
+        description: Primary key — use case ID.
+        tests:
+          - unique
+          - not_null
+      - name: account_id
+        description: Salesforce account ID linked to this use case.
+        tests:
+          - relationships:
+              to: ref('stg_sales_engineering__salesforce_account')
+              field: salesforce_account_id
+              config:
+                severity: warn
+
+  - name: specialist_pigment
+    description: >
+      Pigment headcount roster with position details, hire status, org geography,
+      SFDC user mapping, and territory profiles. ~167M rows — materialized as view
+      to avoid expensive table rebuilds.
+    columns:
+      - name: position_id
+        description: Position ID. Not a reliable primary key — 1.8M nulls in source data.
+
+  - name: specialist_org
+    description: >
+      SE org hierarchy with employee details, full management chain, skills
+      assessments, certifications, territory profiles, and employment status.
+    columns:
+      - name: employee_id
+        description: Primary key — employee ID.
+        tests:
+          - unique
+          - not_null
+      - name: se_id
+        description: Salesforce user ID.
+        tests:
+          - not_null
