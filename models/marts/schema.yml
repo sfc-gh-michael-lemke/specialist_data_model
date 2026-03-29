@@ -53,3 +53,8 @@ models:
     description: >
       Specialist team member requests with assignment, approval workflow,
       use case details, resolution metrics, and timing data.
+
+  - name: specialist_accounts
+    description: >
+      Salesforce account metrics including growth ACV, consumption ACV,
+      overage/underage, warehouse counts, use case counts, and role usage.

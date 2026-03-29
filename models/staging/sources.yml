@@ -27,3 +27,10 @@ sources:
     tables:
       - name: dim_se_specialist_metadata
         description: Specialist metadata including specialist group classification and employee mapping.
+
+  - name: sales_engineering
+    database: SALES
+    schema: SALES_ENGINEERING
+    tables:
+      - name: salesforce_account
+        description: Salesforce account metrics including ACV, consumption, warehouse counts, use case counts, and role usage.
