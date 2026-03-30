@@ -61,30 +61,22 @@ has_comments = filtered[filtered["SPECIALIST_COMMENTS_7D"] > 0].copy()
 no_comments = filtered[filtered["SPECIALIST_COMMENTS_7D"] == 0].copy()
 
 # --- KPI row ---
-with st.container(horizontal=True):
-    st.metric("Total specialists", len(filtered), border=True)
-    st.metric(
-        "With comments (7d)",
-        len(has_comments),
-        border=True,
-    )
-    st.metric(
-        "Without comments (7d)",
-        len(no_comments),
-        border=True,
-    )
-    pct = (
-        f"{len(has_comments) / len(filtered) * 100:.0f}%"
-        if len(filtered) > 0
-        else "N/A"
-    )
-    st.metric("Comment rate", pct, border=True)
-    vivun_pct = (
-        f"{(filtered['ACTIVITIES_7D_VIVUN'] > 0).sum() / len(filtered) * 100:.0f}%"
-        if len(filtered) > 0
-        else "N/A"
-    )
-    st.metric("Vivun usage", vivun_pct, border=True)
+kpi1, kpi2, kpi3, kpi4, kpi5 = st.columns(5)
+kpi1.metric("Total specialists", len(filtered))
+kpi2.metric("With comments (7d)", len(has_comments))
+kpi3.metric("Without comments (7d)", len(no_comments))
+pct = (
+    f"{len(has_comments) / len(filtered) * 100:.0f}%"
+    if len(filtered) > 0
+    else "N/A"
+)
+kpi4.metric("Comment rate", pct)
+vivun_pct = (
+    f"{(filtered['ACTIVITIES_7D_VIVUN'] > 0).sum() / len(filtered) * 100:.0f}%"
+    if len(filtered) > 0
+    else "N/A"
+)
+kpi5.metric("Vivun usage", vivun_pct)
 
 # --- column display order ---
 display_cols = [
