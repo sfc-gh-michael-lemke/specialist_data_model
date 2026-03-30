@@ -6,7 +6,7 @@ entities:
       name: SPECIALIST_ENGAGEMENT_WEEKLY_APP
       database: AFE
       schema: DBT_DEV_MARTS
-    query_warehouse: SNOWHOUSE
+    query_warehouse: SNOWADHOC
     runtime_name: SYSTEM$ST_CONTAINER_RUNTIME_PY3_11
     compute_pool: STREAMLIT_DEDICATED_POOL
     main_file: streamlit_app.py
