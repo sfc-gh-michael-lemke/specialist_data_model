@@ -79,8 +79,12 @@ with st.container(horizontal=True):
         else "N/A"
     )
     st.metric("Comment rate", pct, border=True)
-    st.metric("Setsail activities", int(filtered["ACTIVITIES_7D_SETSAIL"].sum()), border=True)
-    st.metric("Vivun activities", int(filtered["ACTIVITIES_7D_VIVUN"].sum()), border=True)
+    vivun_pct = (
+        f"{(filtered['ACTIVITIES_7D_VIVUN'] > 0).sum() / len(filtered) * 100:.0f}%"
+        if len(filtered) > 0
+        else "N/A"
+    )
+    st.metric("Vivun usage", vivun_pct, border=True)
 
 # --- column display order ---
 display_cols = [
