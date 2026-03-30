@@ -71,12 +71,16 @@ with st.container(horizontal=True):
         else "N/A"
     )
     st.metric("Comment rate", pct, border=True)
+    st.metric("Setsail activities", int(filtered["ACTIVITIES_7D_SETSAIL"].sum()), border=True)
+    st.metric("Vivun activities", int(filtered["ACTIVITIES_7D_VIVUN"].sum()), border=True)
 
 # --- column display order ---
 display_cols = [
     "EMPLOYEE_NAME",
     "SPECIALIST_COMMENTS_7D",
     "ACTIVITIES_7D",
+    "ACTIVITIES_7D_SETSAIL",
+    "ACTIVITIES_7D_VIVUN",
     "SPECIALIST_GROUP",
     "SPECIALIST_SUB_GROUP",
     "SPECIALIST_THEATER_MARKET",
@@ -88,6 +92,8 @@ rename_map = {
     "EMPLOYEE_NAME": "Name",
     "SPECIALIST_COMMENTS_7D": "Comments (7d)",
     "ACTIVITIES_7D": "Activities (7d)",
+    "ACTIVITIES_7D_SETSAIL": "Setsail (7d)",
+    "ACTIVITIES_7D_VIVUN": "Vivun (7d)",
     "SPECIALIST_GROUP": "Group",
     "SPECIALIST_SUB_GROUP": "Sub-group",
     "SPECIALIST_THEATER_MARKET": "Market",

@@ -148,6 +148,10 @@ models:
         description: Count of distinct specialist comment changes in the last 7 days.
       - name: activities_7d
         description: Total SE activities in the last 7 days.
+      - name: activities_7d_setsail
+        description: Distinct Setsail-sourced activities in the last 7 days.
+      - name: activities_7d_vivun
+        description: Distinct Vivun-sourced activities in the last 7 days.
       - name: manager_name
         description: Direct manager name.
       - name: third_line_manager
