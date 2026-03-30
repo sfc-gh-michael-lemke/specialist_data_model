@@ -15,7 +15,15 @@ st.caption("7-day specialist comment and activity snapshot for AMS AFE & Archite
 @st.cache_data(ttl=timedelta(minutes=10))
 def load_data():
     conn = st.connection("snowflake")
-    return conn.query("SELECT * FROM SPECIALIST_ENGAGEMENT_WEEKLY WHERE IS_MANAGER = 'N'")
+    return conn.query("""
+        SELECT
+            EMPLOYEE_NAME, SPECIALIST_COMMENTS_7D, ACTIVITIES_7D,
+            ACTIVITIES_7D_SETSAIL, ACTIVITIES_7D_VIVUN, MANAGER_NAME,
+            THIRD_LINE_MANAGER, SPECIALIST_GROUP, SPECIALIST_SUB_GROUP,
+            SPECIALIST_THEATER, SPECIALIST_THEATER_MARKET, IS_MANAGER
+        FROM SPECIALIST_ENGAGEMENT_WEEKLY
+        WHERE IS_MANAGER = 'N'
+    """)
 
 
 df = load_data()
