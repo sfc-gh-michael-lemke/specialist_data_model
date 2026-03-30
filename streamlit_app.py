@@ -19,7 +19,7 @@ def load_data():
 
 
 df = load_data()
-df = df[df["IS_MANAGER"] == False]
+df = df[df["IS_MANAGER"] == "N"]
 
 # --- sidebar filters ---
 with st.sidebar:
