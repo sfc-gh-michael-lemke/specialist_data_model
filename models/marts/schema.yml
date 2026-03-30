@@ -167,6 +167,8 @@ models:
               values: ['AMS']
       - name: specialist_theater_market
         description: Specialist theater market assignment.
+      - name: is_manager
+        description: Whether this specialist is a people manager.
 
   - name: specialist_org
     description: >

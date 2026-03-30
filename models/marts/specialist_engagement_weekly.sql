@@ -33,7 +33,8 @@ select
     sm.specialist_group,
     sm.specialist_sub_group,
     sm.specialist_theater,
-    sm.specialist_theater_market
+    sm.specialist_theater_market,
+    o.is_manager
 
 from org as o
 inner join specialist_metadata as sm
