@@ -3,12 +3,12 @@ import pandas as pd
 from datetime import timedelta
 
 st.set_page_config(
-    page_title="Specialist engagement weekly",
+    page_title="AMS specialist engagement weekly",
     page_icon=":material/group:",
     layout="wide",
 )
 
-st.title("Specialist engagement weekly")
+st.title("AMS specialist engagement weekly")
 st.caption("7-day specialist comment and activity snapshot for AMS AFE & Architect teams")
 
 
