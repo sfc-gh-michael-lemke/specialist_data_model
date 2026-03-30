@@ -15,11 +15,10 @@ st.caption("7-day specialist comment and activity snapshot for AMS AFE & Archite
 @st.cache_data(ttl=timedelta(minutes=10))
 def load_data():
     conn = st.connection("snowflake")
-    return conn.query("SELECT * FROM SPECIALIST_ENGAGEMENT_WEEKLY")
+    return conn.query("SELECT * FROM SPECIALIST_ENGAGEMENT_WEEKLY WHERE IS_MANAGER = 'N'")
 
 
 df = load_data()
-df = df[df["IS_MANAGER"] == "N"]
 
 # --- sidebar filters ---
 with st.sidebar:
