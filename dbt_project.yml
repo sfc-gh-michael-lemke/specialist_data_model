@@ -34,3 +34,5 @@ models:
     marts:
       +materialized: table
       +schema: marts
+      +grants:
+        select: ['AFE_MODELING_RL', 'DASHBOARD_SHARING_RL', 'SALES_ENGINEER']
