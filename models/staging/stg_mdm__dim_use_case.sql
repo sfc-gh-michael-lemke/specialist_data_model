@@ -11,5 +11,7 @@ select
     district_name,
     account_id,
     account_name,
+    account_gvp,
+    created_date,
     product_category_array
 from {{ source('mdm', 'dim_use_case') }}
