@@ -45,3 +45,17 @@ sources:
     tables:
       - name: pigment_roster
         description: Pigment headcount roster with position details, hire status, org geography, SFDC user mapping, and territory profiles.
+
+  - name: mdm
+    database: MDM
+    schema: MDM_INTERFACES
+    tables:
+      - name: dim_use_case
+        description: Use case dimension with stage, EACV, dates, territory hierarchy, product categories, and team metadata.
+
+  - name: sales_reporting
+    database: SALES
+    schema: REPORTING
+    tables:
+      - name: core_sales_forecast_use_cases_call
+        description: Use case forecast call records with forecast type, territory level, fiscal quarter, and submission date.
