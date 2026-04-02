@@ -13,5 +13,7 @@ select
     account_name,
     account_gvp,
     created_date,
+    is_won,
+    is_deployed,
     product_category_array
 from {{ source('mdm', 'dim_use_case') }}
