@@ -10,34 +10,12 @@ sources:
       - name: user
         description: Salesforce user records with IDs and profile information.
 
-  - name: se_reporting
-    database: SALES
-    schema: SE_REPORTING
-    tables:
-      - name: dim_se_activity
-        description: SE activity log with use case linkage and activity dates.
-      - name: se_hierarchy
-        description: SE org hierarchy with preferred names, managers, tenure, and active status.
-      - name: specialist_team_member_requests
-        description: Specialist team member request records with assignment, approval, use case, and resolution details.
-      - name: se_org_hierarchy_vw
-        description: SE org hierarchy view with employee details, management chain, skills assessments, certifications, and territory profiles.
-
   - name: sigma_writeback
     database: SIGMA_WRITEBACK
     schema: SALES
     tables:
       - name: dim_se_specialist_metadata
         description: Specialist metadata including specialist group classification and employee mapping.
-
-  - name: sales_engineering
-    database: SALES
-    schema: SALES_ENGINEERING
-    tables:
-      - name: salesforce_account
-        description: Salesforce account metrics including ACV, consumption, warehouse counts, use case counts, and role usage.
-      - name: usecase
-        description: Use case records with name, description, stage, account linkage, and date stamp.
 
   - name: pigment
     database: IT
@@ -53,9 +31,106 @@ sources:
       - name: dim_use_case
         description: Use case dimension with stage, EACV, dates, territory hierarchy, product categories, and team metadata.
 
+  - name: sales_engineering
+    database: SALES
+    schema: SALES_ENGINEERING
+    tables:
+      - name: salesforce_account
+        description: Salesforce account metrics including ACV, consumption, warehouse counts, use case counts, and role usage.
+      - name: usecase
+        description: Use case records with name, description, stage, account linkage, and date stamp.
+      - name: consumption_risk_movements
+        description: >
+          Temporal snapshot of account consumption risk flags, SE comments, and mitigation steps.
+          Rows with DBT_VALID_TO IS NULL represent the current state.
+
+  - name: se_reporting
+    database: SALES
+    schema: SE_REPORTING
+    tables:
+      - name: dim_se_activity
+        description: SE activity log with use case linkage and activity dates.
+      - name: se_hierarchy
+        description: SE org hierarchy with preferred names, managers, tenure, and active status.
+      - name: specialist_team_member_requests
+        description: Specialist team member request records with assignment, approval, use case, and resolution details.
+      - name: se_org_hierarchy_vw
+        description: SE org hierarchy view with employee details, management chain, skills assessments, certifications, and territory profiles.
+      - name: account_business_indicators
+        description: >
+          Account-level business health indicators including assessment tier, consumption context,
+          growth tier, SE engagement context, risk scores, and run rate metrics.
+      - name: account_base_metrics
+        description: >
+          Account base metrics including meeting dates, use case counts by stage,
+          run rates, and consumption risk flags.
+
   - name: sales_reporting
     database: SALES
     schema: REPORTING
     tables:
       - name: core_sales_forecast_use_cases_call
         description: Use case forecast call records with forecast type, territory level, fiscal quarter, and submission date.
+      - name: bob_consumption
+        description: >
+          Book of Business consumption table with trailing revenue windows (30/60/90/180d),
+          period-over-period deltas, growth rates, fiscal quarter actuals, predictions, and
+          capacity metrics per account.
+      - name: active_use_case_pipeline
+        description: >
+          Active use case pipeline with health score, go-live probability, expected value,
+          go-live fiscal quarter, specialist coverage, and forecast metadata.
+      - name: core_use_case
+        description: >
+          Core use case dimension with stage, ACV, dates (decision, go-live, technical win),
+          territory hierarchy, SE details, workloads, and risk level.
+      - name: consumption_daily
+        description: >
+          Daily account-level consumption with fiscal year/quarter labels, running actuals,
+          and running predicted revenue. Used for QTD tracking and fiscal quarter comparisons.
+      - name: overlay_use_case_master
+        description: >
+          Overlay enrichment for use cases: product category, technical use case,
+          prioritized features, and specialist involvement metadata.
+      - name: fct_use_case_text_sentiment
+        description: >
+          NLP-derived text sentiment and staleness signals for use case SE comments,
+          including days since last update and stale flag.
+      - name: overlay_use_case_pipeline
+        description: >
+          Per-specialist use case assignments with role, involvement level,
+          team member flag, validation status, and specialist comments (NEXT_STEPS).
+      - name: int_employee_management_hierarchy
+        description: >
+          Employee management hierarchy snapshot with manager chain, active status,
+          and snapshot timestamp. Used to resolve first-line manager relationships.
+
+  # NOTE: AFE_ADMIN_RL requires SELECT grants on FINANCE.CUSTOMER before dbt can build
+  # these models. Run as SECURITYADMIN:
+  #   GRANT USAGE ON DATABASE FINANCE TO ROLE AFE_ADMIN_RL;
+  #   GRANT USAGE ON SCHEMA FINANCE.CUSTOMER TO ROLE AFE_ADMIN_RL;
+  #   GRANT SELECT ON TABLE FINANCE.CUSTOMER.PRODUCT_CATEGORY_REV_ACTUALS_W_FORECAST_SFDC TO ROLE AFE_ADMIN_RL;
+  - name: finance_customer
+    database: FINANCE
+    schema: CUSTOMER
+    tables:
+      - name: product_category_rev_actuals_w_forecast_sfdc
+        description: >
+          Product and feature-level revenue actuals and forecasts by Salesforce account,
+          usage date, product category, and feature. Actuals vs forecast distinguished
+          by ACTUALS_FORECAST_TYPE column.
+
+  # NOTE: AFE_ADMIN_RL requires SELECT grant on SNOWSCIENCE.PRODUCT before dbt can build
+  # these models. Run as SECURITYADMIN:
+  #   GRANT USAGE ON DATABASE SNOWSCIENCE TO ROLE AFE_ADMIN_RL;
+  #   GRANT USAGE ON SCHEMA SNOWSCIENCE.PRODUCT TO ROLE AFE_ADMIN_RL;
+  #   GRANT SELECT ON TABLE SNOWSCIENCE.PRODUCT.WLC_CLUSTER_LABEL_V3 TO ROLE AFE_ADMIN_RL;
+  - name: snowscience_product
+    database: SNOWSCIENCE
+    schema: PRODUCT
+    tables:
+      - name: wlc_cluster_label_v3
+        description: >
+          Weekly workload cluster labels per Salesforce account. LEVEL1 represents the
+          functional area (e.g. Data Engineering, ML/AI). PCT_JOB_CREDITS is the share
+          of credits attributed to that functional area in a given week (DS_W).

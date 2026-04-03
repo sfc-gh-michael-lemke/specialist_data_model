@@ -1,0 +1,179 @@
+version: 2
+
+models:
+  - name: mart_overlay_bob
+    description: >
+      Book of Business consumption per account. Trailing revenue windows (30/60/90/180d),
+      period-over-period deltas, growth rates, fiscal quarter actuals and predictions,
+      and capacity metrics. Direct pass-through of SALES.REPORTING.BOB_CONSUMPTION.
+    columns:
+      - name: ACCOUNT_ID
+        description: Salesforce account ID (primary key).
+        tests:
+          - unique
+          - not_null
+
+  - name: mart_overlay_account_indicators
+    description: >
+      Account-level business health indicators from ACCOUNT_BUSINESS_INDICATORS.
+      Includes assessment tier, consumption context, growth tier, SE engagement context,
+      risk scores, district name, and run rate metrics.
+    columns:
+      - name: ACCOUNT_ID
+        description: Salesforce account ID (primary key).
+        tests:
+          - unique
+          - not_null
+
+  - name: mart_overlay_account_base_metrics
+    description: >
+      Account base metrics from ACCOUNT_BASE_METRICS. Includes last meeting date,
+      use case counts by stage (active, pursuit, implementation, high-risk),
+      run rates, and consumption risk flag.
+    columns:
+      - name: ACCOUNT_ID
+        description: Salesforce account ID (primary key).
+        tests:
+          - unique
+          - not_null
+
+  - name: mart_overlay_risk_movements
+    description: >
+      Current-state consumption risk snapshot (DBT_VALID_TO IS NULL rows only).
+      Contains risk classification, SE comments, account strategy, and mitigation steps.
+    columns:
+      - name: ACCOUNT_ID
+        description: Salesforce account ID.
+
+  - name: mart_overlay_active_use_cases
+    description: >
+      Active use case pipeline joined with CORE_USE_CASE for industry and prioritized feature.
+      Includes health status, risk factors, days in stage, and lead SE.
+    columns:
+      - name: USE_CASE_ID
+        description: Use case ID (primary key).
+        tests:
+          - unique
+          - not_null
+
+  - name: mart_overlay_product_accounts
+    description: >
+      Distinct account → product category mapping from the last 3 months of Finance actuals.
+      Used to filter accounts by product and to populate the Product Category sidebar filter.
+
+  - name: mart_overlay_daily_consumption
+    description: >
+      Daily account-level consumption for the current fiscal quarter (up to today).
+      Includes theater, region, total revenue, and running actual/predicted revenue.
+      Refresh daily via dbt run to keep the rolling window current.
+
+  - name: mart_overlay_prev_quarter_revenue
+    description: >
+      Single-row aggregate: total revenue for the 2nd-previous fiscal quarter.
+      Used by the quarterly trend chart in the Consumption Intelligence page.
+      Returns one column: PREV2_FQ_REVENUE.
+    columns:
+      - name: PREV2_FQ_REVENUE
+        description: Total revenue summed across all accounts for FQ-2 (two fiscal quarters ago).
+
+  - name: mart_overlay_monthly_trend
+    description: >
+      Monthly consumption by product category per account — last 6 months of Finance actuals.
+      Grain: account × product category × month.
+      Refresh daily/weekly to keep the rolling window current.
+    columns:
+      - name: CONSUMPTION_MONTH
+        description: First day of the month (DATE_TRUNC MONTH).
+      - name: PRODUCT_CATEGORY
+        description: Product category name.
+      - name: ACCOUNT_ID
+        description: Salesforce account ID.
+      - name: MONTHLY_REVENUE
+        description: Sum of revenue for this account, product category, and month.
+
+  - name: mart_overlay_product_consumption
+    description: >
+      Product-category-level revenue with month-over-month daily rate comparisons
+      vs 1 month, 3 month, and 6 month ago averages. Grain: account × product category.
+      Uses the most recent complete month as "current". Refresh daily to stay current.
+    columns:
+      - name: ACCOUNT_ID
+        description: Salesforce account ID.
+      - name: PRODUCT_CATEGORY
+        description: Product category name.
+      - name: MONTHLY_REVENUE
+        description: Revenue in the most recent complete month.
+      - name: MOM_GROWTH_RATE
+        description: Month-over-month growth rate vs prior month (decimal, e.g. 0.12 = 12%).
+      - name: MOM_GROWTH_RATE_VS_3M_AGO
+        description: Daily rate growth vs 3-month prior average.
+      - name: MOM_GROWTH_RATE_VS_6M_AGO
+        description: Daily rate growth vs 6-month prior average.
+
+  - name: mart_overlay_functional_areas
+    description: >
+      Distinct account → functional area mapping from the latest weekly WLC snapshot.
+      Used for the Functional Area sidebar filter.
+
+  - name: mart_overlay_func_area_shares
+    description: >
+      Per-account functional area credit share averaged across 6 months of weekly WLC snapshots.
+      CREDIT_SHARE represents the fraction of compute credits attributed to that functional area.
+      Grain: account × functional area.
+
+  - name: mart_overlay_monthly_func_area_shares
+    description: >
+      Per-account, per-month functional area credit share derived from weekly WLC snapshots.
+      Grain: account × month × functional area.
+    columns:
+      - name: SHARE_MONTH
+        description: First day of the month (DATE_TRUNC of DS_W).
+
+  - name: mart_overlay_feature_shares
+    description: >
+      Per-account feature revenue share (last 3 months). CREDIT_SHARE is the feature's
+      revenue as a fraction of the account's total revenue across all products/features.
+      Grain: account × product category × feature.
+
+  - name: mart_overlay_forecast_pipeline
+    description: >
+      Full use case pipeline for stages 1–7, enriched with pipeline health scores,
+      go-live probability, expected value, overlay metadata (product category,
+      technical use case, prioritized features), and text sentiment signals.
+      Used by the Use Case Forecasting page.
+    columns:
+      - name: USE_CASE_ID
+        description: Use case ID (primary key).
+        tests:
+          - unique
+          - not_null
+      - name: STAGE_NUMBER
+        description: Integer stage number extracted from USE_CASE_STAGE (1–7).
+      - name: GO_LIVE_FQ
+        description: Fiscal quarter of projected go-live (e.g. FY2027-Q1).
+      - name: IS_CURRENT_FQ_GO_LIVE
+        description: Boolean flag — true if this use case is projected to go live in the current FQ.
+
+  - name: mart_overlay_specialist_pipeline
+    description: >
+      Per-specialist use case assignments for stages 1–7. Includes specialist role,
+      involvement level, team member flag, validation status, and comments.
+      Grain: use case × specialist.
+    columns:
+      - name: USE_CASE_ID
+        description: Use case ID.
+      - name: SPECIALIST_NAME
+        description: Specialist's full name.
+      - name: IS_TEAM_MEMBER
+        description: Flag (1/0) indicating this specialist is a confirmed team member on the use case.
+
+  - name: mart_overlay_specialist_mgmt_hierarchy
+    description: >
+      Maps each specialist to their Workday first-line manager using the latest
+      employee hierarchy snapshot. Used to populate the Specialist Manager filter
+      and to resolve manager → specialist drill-downs.
+    columns:
+      - name: SPECIALIST_NAME
+        description: Specialist's full name.
+      - name: WORKDAY_MANAGER
+        description: First-line manager name from the Workday hierarchy.
