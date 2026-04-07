@@ -152,6 +152,8 @@ models:
         description: Distinct Setsail-sourced activities in the last 7 days.
       - name: activities_7d_vivun
         description: Distinct Vivun-sourced activities in the last 7 days.
+      - name: accounts_7d
+        description: Distinct accounts with at least one activity in the last 7 days.
       - name: manager_name
         description: Direct manager name.
       - name: third_line_manager
@@ -195,6 +197,8 @@ models:
         description: Distinct Setsail-sourced activities in the last 7 days.
       - name: activities_7d_vivun
         description: Distinct Vivun-sourced activities in the last 7 days.
+      - name: accounts_7d
+        description: Distinct accounts with at least one activity in the last 7 days.
       - name: manager_name
         description: Direct manager name.
       - name: third_line_manager

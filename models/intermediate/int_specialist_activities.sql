@@ -4,6 +4,7 @@ with activities as (
         activity_se_id as sfdc_user_id,
         activity_id,
         activity_date,
+        account_id,
         use_case_id,
         source
     from {{ ref('stg_se_reporting__dim_se_activity') }}
@@ -38,7 +39,11 @@ select
     count(distinct case
         when activity_date >= dateadd(day, -7, current_date()) and source = 'Vivun'
         then activity_id
-    end) as activities_7d_vivun
+    end) as activities_7d_vivun,
+    count(distinct case
+        when activity_date >= dateadd(day, -7, current_date())
+        then account_id
+    end) as accounts_7d
 
 from activities
 group by sfdc_user_id

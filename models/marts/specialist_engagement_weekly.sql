@@ -30,6 +30,7 @@ select
     coalesce(a.activities_7d, 0) as activities_7d,
     coalesce(a.activities_7d_setsail, 0) as activities_7d_setsail,
     coalesce(a.activities_7d_vivun, 0) as activities_7d_vivun,
+    coalesce(a.accounts_7d, 0) as accounts_7d,
     o.manager_name,
     o.third_line_manager,
     sm.specialist_group,
