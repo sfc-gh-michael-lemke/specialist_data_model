@@ -174,6 +174,49 @@ models:
       - name: is_manager
         description: Whether this specialist is a people manager.
 
+  - name: specialist_engagement_weekly_apj
+    description: >
+      Weekly specialist engagement snapshot for APJ AFE and Architect specialists.
+      Shows 7-day specialist comment counts and activity counts joined with
+      org hierarchy and specialist metadata.
+    columns:
+      - name: employee_name
+        description: Specialist's employee name from the org hierarchy.
+        tests:
+          - unique:
+              config:
+                severity: warn
+          - not_null
+      - name: specialist_comments_7d
+        description: Count of distinct specialist comment changes in the last 7 days.
+      - name: activities_7d
+        description: Total SE activities in the last 7 days.
+      - name: activities_7d_setsail
+        description: Distinct Setsail-sourced activities in the last 7 days.
+      - name: activities_7d_vivun
+        description: Distinct Vivun-sourced activities in the last 7 days.
+      - name: manager_name
+        description: Direct manager name.
+      - name: third_line_manager
+        description: Third-line manager in the org hierarchy.
+      - name: specialist_group
+        description: "Specialist classification: AFE or Architect."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['AFE', 'Architect']
+      - name: specialist_sub_group
+        description: Specialist sub-group classification.
+      - name: specialist_theater
+        description: Specialist theater assignment.
+        tests:
+          - accepted_values:
+              values: ['APJ']
+      - name: specialist_theater_market
+        description: Specialist theater market assignment.
+      - name: is_manager
+        description: Whether this specialist is a people manager.
+
   - name: specialist_org
     description: >
       SE org hierarchy with employee details, full management chain, skills
